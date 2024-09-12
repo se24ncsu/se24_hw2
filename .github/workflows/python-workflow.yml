@@ -98,9 +98,7 @@ jobs:
       - name: Generate badge URLs
         id: generate_badges
         run: |
-          echo "exit_code=0" >> $GITHUB_ENV
-          pytest --cov=source --cov-report xml || echo "exit_code=$?" >> $GITHUB_ENV
-        run: |
+          exit_code = $(pytest)
           echo "Checking coverage XML file..."
           if [ -f coverage.xml ]; then
             echo "Coverage file exists"
@@ -147,10 +145,10 @@ jobs:
 
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
-          echo "Exit code: ${{ env.exit_code }}"
+          echo "{Exit code: $exit_code}"
 
           # Determine the test badge status
-          if [[ "${{ env.exit_code }}" == "0" ]]; then
+          if [[ "$exit_code" == "0" ]]; then
             test_status="passing"
             test_color="green"
           else
