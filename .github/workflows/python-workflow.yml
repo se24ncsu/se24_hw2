@@ -117,13 +117,21 @@ jobs:
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
 
           pyright_output=$(pyright --outputjson)
-          echo "$pyright_output"
-          pyright_score=$(echo "$pyright_output" | jq -r '.score')
-          pyright_color="green"
-          if [[ "$pyright_score" == "0" || "$pyright_score" == "" ]]; then
-            pyright_color="red"
+          error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
+
+          # Determine the badge color and label
+          if [[ "$error_count" == "0" ]]; then
+              pyright_score="passing"
+              pyright_color="green"
+          else
+              pyright_score="failing"
+              pyright_color="red"
           fi
+
+          # Construct the badge URL
           pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
+
+          echo "$pyright_badge"
 
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
