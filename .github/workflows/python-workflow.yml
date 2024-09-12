@@ -64,7 +64,8 @@ jobs:
             pip install pytest pytest-cov
 
       - run: |
-            pytest --cov=. --cov-report xml || echo "exit_code=$?" >> $GITHUB_ENV
+            echo "exit_code=0" >> $GITHUB_ENV
+            pytest --cov=source --cov-report xml || echo "exit_code=$?" >> $GITHUB_ENV
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
