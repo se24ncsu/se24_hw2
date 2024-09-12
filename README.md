@@ -1,7 +1,7 @@
 # se24
-![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%-green)
-![Pylint](https://img.shields.io/badge/pylint--green)
-![Pyright](https://img.shields.io/badge/pyright-0-green)
+![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)
+![Pylint](https://img.shields.io/badge/pylint-at-red)
+![Pyright](https://img.shields.io/badge/pyright-null-green)
 <!-- ## Status Badges
 
 ![Python Tests](https://github.com/se24ncsu/se24/actions/workflows/python-workflow.yml/badge.svg?event=push)
@@ -14,7 +14,7 @@
 ![Linting: pylint](https://github.com/se24ncsu/se24/actions/workflows/pylint.yml/badge.svg)
 ![Type Checking: pyright](https://github.com/se24ncsu/se24/actions/workflows/pyright.yml/badge.svg)
 ![Code Formatting: autopep8](https://github.com/se24ncsu/se24/actions/workflows/autopep8.yml/badge.svg)
-![Test Coverage: pytest-cov](https://codecov.io/gh/se24ncsu/se24/branch/main/graph/badge.svg) -->
+![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)
 
 ## Badges
 
