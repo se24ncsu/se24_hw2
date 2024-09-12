@@ -99,8 +99,7 @@ jobs:
       - name: Generate badge URLs
         id: generate_badges
         run: |
-          # Generate pylint badge
-          pylint_output=$(pylint **/*.py > post_traces/pylint.txt 2>&1)
+          pylint_output=$(pylint **/*.py)
           pylint_score=$(echo "$pylint_output" | grep 'rated' | awk '{print $7}' | cut -d'/' -f1)
           pylint_color="green"
           if (( $(echo "$pylint_score < 10" | bc -l) )); then
@@ -108,8 +107,7 @@ jobs:
           fi
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
 
-          # Generate pyright badge
-          pyright_output=$(pyright > post_traces/pylint.txt 2>&1 --outputjson)
+          pyright_output=$(pyright --outputjson)
           error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
           if [[ "$error_count" == "0" ]]; then
               pyright_score="passing"
@@ -132,7 +130,6 @@ jobs:
           fi
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
-          # Generate test badge
           pytest --cov=source --cov-report xml
           exit_code=$?
           if [[ "$exit_code" == "0" ]]; then
@@ -152,10 +149,11 @@ jobs:
 
       - name: Update README with badges
         run: |
-          sed -i '/\[Test Coverage: pytest-cov\]/c\![Test Coverage: pytest-cov](${{ env.coverage_badge }})' README.md
-          sed -i '/\[Pylint\]/c\![Pylint](${{ env.pylint_badge }})' README.md
-          sed -i '/\[Pyright\]/c\![Pyright](${{ env.pyright_badge }})' README.md
-          sed -i '/\[Tests\]/c\![Tests](${{ env.test_badge }})' README.md
+          run_url = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          sed -i '/\[Test Coverage: pytest-cov\]/c\![Test Coverage: pytest-cov]((${{ env.coverage_badge }})("$RUN_LOG_URL")' README.md
+          sed -i '/\[Pylint\]/c\![Pylint](${{ env.pylint_badge }})("$RUN_LOG_URL")' README.md
+          sed -i '/\[Pyright\]/c\![Pyright](${{ env.pyright_badge }})("$RUN_LOG_URL")' README.md
+          sed -i '/\[Tests\]/c\![Tests](${{ env.test_badge }})("$RUN_LOG_URL")' README.md
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
