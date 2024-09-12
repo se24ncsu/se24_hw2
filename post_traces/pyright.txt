@@ -7,3 +7,11 @@
 0 errors, 0 warnings, 0 informations 
 0 errors, 0 warnings, 0 informations 
 0 errors, 0 warnings, 0 informations 
+/workspaces/se24_hw2/sort/hw2_debugging.py
+  /workspaces/se24_hw2/sort/hw2_debugging.py:2:6 - error: Import "sort.rand" could not be resolved (reportMissingImports)
+/workspaces/se24_hw2/sort/rand.py
+  /workspaces/se24_hw2/sort/rand.py:7:24 - error: Argument of type "int" cannot be assigned to parameter "iterable" of type "Iterable[_T@enumerate]" in function "__new__"
+    "int" is incompatible with protocol "Iterable[_T@enumerate]"
+      "__iter__" is not present (reportArgumentType)
+2 errors, 0 warnings, 0 informations 
+0 errors, 0 warnings, 0 informations 
