@@ -1,7 +1,7 @@
 # se24
 ![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)
 ![Pylint](https://img.shields.io/badge/pylint-10.00-green)
-![Pyright](https://img.shields.io/badge/pyright-null-green)
+![Pyright](https://img.shields.io/badge/pyright-passing-green)
 <!-- ## Status Badges
 
 ![Python Tests](https://github.com/se24ncsu/se24/actions/workflows/python-workflow.yml/badge.svg?event=push)
