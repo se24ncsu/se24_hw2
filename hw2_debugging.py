@@ -1,7 +1,9 @@
+"""Mergesort"""
 import rand
 
 def mergeSort(arr):
-    if (len(arr) == 1):
+    """A start-up function for merge sort"""
+    if len(arr) == 1:
         return arr
 
     half = len(arr)//2
@@ -9,6 +11,7 @@ def mergeSort(arr):
     return recombine(mergeSort(arr[:half]), mergeSort(arr[half:]))
 
 def recombine(leftArr, rightArr):
+    """ A function to recombine all individual elements in a sorted manner"""
     leftIndex = 0
     rightIndex = 0
     mergeArr = [None] * (len(leftArr) + len(rightArr))

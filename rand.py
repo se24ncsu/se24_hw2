@@ -1,3 +1,4 @@
+"""This module generates an array using random numbers"""
 import subprocess
 
 def random_array(arr):
