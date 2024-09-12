@@ -76,6 +76,8 @@ jobs:
     name: Generate Badges
     runs-on: ubuntu-latest
     needs: coverage
+    env:
+      PYTHONPATH: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v3
 
