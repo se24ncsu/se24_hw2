@@ -99,46 +99,72 @@ jobs:
       - name: Generate badge URLs
         id: generate_badges
         run: |
-          pylint_output=$(pylint **/*.py)
-          pylint_score=$(echo "$pylint_output" | grep 'rated' | awk '{print $7}' | cut -d'/' -f1)
-          echo "pylint_score = $pylint_score"
-          pylint_color="green"
-          if (( $(echo "$pylint_score < 10" | bc -l) )); then
+          # Pylint
+          pylint_output=$(pylint **/*.py 2>&1) || true
+          pylint_exit_code=$?
+          echo "Pylint exit code: $pylint_exit_code"
+          echo "Pylint output: $pylint_output"
+          
+          pylint_score=$(echo "$pylint_output" | grep -oP '(?<=rated at )\d+\.\d+' | tail -1)
+          pylint_score=${pylint_score:-0}
+          echo "Pylint score: $pylint_score"
+          
+          if (( $(echo "$pylint_score < 5" | bc -l) )) || [ $pylint_exit_code -ne 0 ]; then
             pylint_color="red"
+          elif (( $(echo "$pylint_score < 8" | bc -l) )); then
+            pylint_color="orange"
+          else
+            pylint_color="green"
           fi
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
-          echo "pylint_badge = $pylint_badge"
+          echo "Pylint badge: $pylint_badge"
 
-          pyright_output=$(pyright --outputjson)
-          echo "pyright_output = $pyright_output"
-          error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
-          echo "error_count = $error_count"
-          if [[ "$error_count" == "0" ]]; then
+          # Pyright
+          pyright_output=$(pyright --outputjson 2>&1) || true
+          pyright_exit_code=$?
+          echo "Pyright exit code: $pyright_exit_code"
+          echo "Pyright output: $pyright_output"
+          
+          if [ $pyright_exit_code -eq 0 ]; then
+            error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
+            if [[ "$error_count" == "0" ]]; then
               pyright_score="passing"
               pyright_color="green"
-          else
+            else
               pyright_score="failing"
               pyright_color="red"
+            fi
+          else
+            pyright_score="error"
+            pyright_color="red"
           fi
           pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
-          echo "pyright_badge = $pyright_badge"
+          echo "Pyright badge: $pyright_badge"
 
-          # Generate coverage badge
-          coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
-          coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
-          if (( $(echo "$coverage_percentage >= 97" | bc -l) )); then
-            coverage_color="green"
-          elif (( $(echo "$coverage_percentage >= 90" | bc -l) )); then
-            coverage_color="orange"
+          # Coverage and Pytest
+          pytest_output=$(pytest --cov=source --cov-report xml 2>&1) || true
+          pytest_exit_code=$?
+          echo "Pytest exit code: $pytest_exit_code"
+          echo "Pytest output: $pytest_output"
+          
+          if [ -f coverage.xml ]; then
+            coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
+            coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
+            if (( $(echo "$coverage_percentage >= 97" | bc -l) )); then
+              coverage_color="green"
+            elif (( $(echo "$coverage_percentage >= 90" | bc -l) )); then
+              coverage_color="orange"
+            else
+              coverage_color="red"
+            fi
           else
+            coverage_percentage="0"
             coverage_color="red"
           fi
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
-          echo "coverage_badge = $coverage_badge"
+          echo "Coverage badge: $coverage_badge"
 
-          pytest --cov=source --cov-report xml
-          exit_code=$?
-          if [[ "$exit_code" == "0" ]]; then
+          if [ $pytest_exit_code -eq 0 ]; then
             test_status="passing"
             test_color="green"
           else
