@@ -98,6 +98,8 @@ jobs:
       - name: Generate badge URLs
         id: generate_badges
         run: |
+          echo "exit_code=0" >> $GITHUB_ENV
+          pytest || echo "exit_code=$?" >> $GITHUB_ENV
           echo "Checking coverage XML file..."
           if [ -f coverage.xml ]; then
             echo "Coverage file exists"
