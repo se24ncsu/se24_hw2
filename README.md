@@ -2,7 +2,7 @@
 
 ## Status Badges
 
-[Tests](https://github.com/se24ncsu/se24/actions/workflows/python-workflow.yml/badge.svg?event=push)
+![Tests](https://img.shields.io/badge/tests-failing-red)
 ![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)
 ![Pylint](https://img.shields.io/badge/pylint-10.00-green)
 ![Pyright](https://img.shields.io/badge/pyright-passing-green)
