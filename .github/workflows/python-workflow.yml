@@ -107,7 +107,7 @@ jobs:
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
           
-          pylint_score=$(pylint **/*.py | grep 'rated' | awk '{print $6}' | cut -d'/' -f1)
+          pylint_score=$(pylint **/*.py) #| grep 'rated' | awk '{print $6}' | cut -d'/' -f1)
           pylint_color="green"
           if (( $(echo "$pylint_score < 10" | bc -l) )); then
             pylint_color="red"
@@ -115,6 +115,7 @@ jobs:
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
 
           pyright_output=$(pyright --outputjson)
+          echo "$pyright_output"
           pyright_score=$(echo "$pyright_output" | jq -r '.score')
           pyright_color="green"
           if [[ "$pyright_score" == "0" || "$pyright_score" == "" ]]; then
