@@ -1,1 +1,6 @@
-0 errors, 0 warnings, 0 informations 
+/workspaces/se24_hw2/hw2_debugging.py
+  /workspaces/se24_hw2/hw2_debugging.py:32:21 - error: Argument of type "list[None]" cannot be assigned to parameter "arr" of type "list[int]" in function "mergeSort"
+    "list[None]" is not assignable to "list[int]"
+      Type parameter "_T@list" is invariant, but "None" is not the same as "int"
+      Consider switching from "list" to "Sequence" which is covariant (reportArgumentType)
+1 error, 0 warnings, 0 informations 
