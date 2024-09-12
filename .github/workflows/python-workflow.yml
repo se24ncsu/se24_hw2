@@ -84,8 +84,13 @@ jobs:
         with:
           name: coverage-report
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils
+          python -m pip install --upgrade pip
+          pip install pylint
+          npm install -g pyright
 
       - name: Generate badge URLs
         id: generate_badges
@@ -102,7 +107,7 @@ jobs:
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
           
-          pylint_score=$(pylint **/*.py | grep 'rated' | awk '{print $6}' | cut -d'/' -f1)  # Example, modify as needed
+          pylint_score=$(pylint **/*.py | grep 'rated' | awk '{print $6}' | cut -d'/' -f1)
           pylint_color="green"
           if (( $(echo "$pylint_score < 10" | bc -l) )); then
             pylint_color="red"
@@ -110,7 +115,7 @@ jobs:
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
 
           pyright_output=$(pyright --outputjson)
-          pyright_score=$(echo "$pyright_output" | jq -r '.score')  # Adjust extraction based on actual output
+          pyright_score=$(echo "$pyright_output" | jq -r '.score')
           pyright_color="green"
           if [[ "$pyright_score" == "0" || "$pyright_score" == "" ]]; then
             pyright_color="red"
@@ -126,7 +131,6 @@ jobs:
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
 
-
       - name: Update README with badges
         run: |
           # Update README with new badges
@@ -137,6 +141,4 @@ jobs:
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
-          author_name: github-actions
-          author_email: github-actions@github.com
-          message: 'Update badges in README'
+          author_name: git
