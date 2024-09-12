@@ -1,5 +1,5 @@
 """Mergesort"""
-from sort.rand import random_array
+
 
 def merge_sort(arr):
     """A start-up function for merge sort"""
@@ -30,8 +30,3 @@ def recombine(left_arr, right_arr):
         merge_arr[left_index + right_index] = left_arr[i]
 
     return merge_arr
-
-arr_random = random_array([None] * 20)
-arr_out = merge_sort(arr_random)
-
-print(arr_out)
