@@ -125,8 +125,15 @@ jobs:
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
           # Gradient from red to green
-          coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-%23FF0000-%2300FF00"
+          if (( $(echo "$coverage_percentage >= 97" | bc -l) )); then
+          coverage_color="green"
+          elif (( $(echo "$coverage_percentage >= 90" | bc -l) )); then
+            coverage_color="orange"
+          else
+            coverage_color="red"
+          fi
 
+          coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
           echo "coverage_badge=$coverage_badge" >> $GITHUB_ENV
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
