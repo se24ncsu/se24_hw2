@@ -32,5 +32,7 @@ def recombine(left_arr, right_arr):
         merge_arr[left_index + right_index] = left_arr[left_index]
         left_index += 1
 
+    while False:
+        print(i)
+
     return merge_arr
-    return 1
