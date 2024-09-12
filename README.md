@@ -2,10 +2,10 @@
 
 ## Status Badges
 
-[![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10839974198)
-[![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10839974198)
-[![Pylint](https://img.shields.io/badge/pylint-9.81-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10839974198)
-[![Pyright](https://img.shields.io/badge/pyright-passing-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10839974198)
+[![Tests](https://img.shields.io/badge/tests-failing-red)](https://github.com/se24ncsu/se24_hw2/actions/runs/10840036211)
+[![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10840036211)
+[![Pylint](https://img.shields.io/badge/pylint-9.81-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10840036211)
+[![Pyright](https://img.shields.io/badge/pyright-passing-green)](https://github.com/se24ncsu/se24_hw2/actions/runs/10840036211)
 
 ## Badges
 
