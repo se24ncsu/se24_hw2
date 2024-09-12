@@ -134,6 +134,10 @@ jobs:
           fi
 
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
+          
+          echo "pylint_badge"
+          echo "pyright_badge"
+          echo "coverage_badge"
           echo "coverage_badge=$coverage_badge" >> $GITHUB_ENV
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
