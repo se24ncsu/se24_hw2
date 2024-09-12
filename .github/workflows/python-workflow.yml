@@ -154,12 +154,13 @@ jobs:
           echo "test_badge=$test_badge" >> $GITHUB_ENV
 
       - name: Update README with badges
+        env:
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          run_url = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          sed -i '/\[Test Coverage: pytest-cov\]/c\![[Test Coverage: pytest-cov]((${{ env.coverage_badge }})]('"$run_url"')' README.md
-          sed -i '/\[Pylint\]/c\![[Pylint](${{ env.pylint_badge }})]('"$run_url"')' README.md
-          sed -i '/\[Pyright\]/c\![[Pyright](${{ env.pyright_badge }})]('"$run_url"')' README.md
-          sed -i '/\[Tests\]/c\![[Tests](${{ env.test_badge }})]('"$run_url"')' README.md
+          sed -i '/\[Test Coverage: pytest-cov\]/c\[![Test Coverage: pytest-cov](${{ env.coverage_badge }})](${{ env.RUN_URL }})' README.md
+          sed -i '/\[Pylint\]/c\[![Pylint](${{ env.pylint_badge }})](${{ env.RUN_URL }})' README.md
+          sed -i '/\[Pyright\]/c\[![Pyright](${{ env.pyright_badge }})](${{ env.RUN_URL }})' README.md
+          sed -i '/\[Tests\]/c\[![Tests](${{ env.test_badge }})](${{ env.RUN_URL }})' README.md
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
