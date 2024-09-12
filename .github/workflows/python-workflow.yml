@@ -134,6 +134,7 @@ jobs:
 
           # Generate test badge
           exit_code=$(pytest --cov=source --cov-report xml || echo $?)
+          echo "$exit_code"
           if [[ "$exit_code" == "0" ]]; then
             test_status="passing"
             test_color="green"
@@ -142,6 +143,7 @@ jobs:
             test_color="red"
           fi
           test_badge="https://img.shields.io/badge/tests-${test_status}-${test_color}"
+          echo "$test_badge"
 
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
