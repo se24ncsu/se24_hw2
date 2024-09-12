@@ -144,17 +144,22 @@ jobs:
 
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
+          echo "Exit code: ${{ env.exit_code }}"
+
+          # Determine the test badge status
           if [[ "${{ env.exit_code }}" == "0" ]]; then
-            echo "${{ env.exit_code }}"
             test_status="passing"
             test_color="green"
           else
-            echo "${{ env.exit_code }}"
-            echo "failing"
             test_status="failing"
             test_color="red"
           fi
+
+          # Construct the badge URL
           test_badge="https://img.shields.io/badge/tests-${test_status}-${test_color}"
+
+          echo "Test badge: $test_badge"
+          echo "test_badge=$test_badge" >> $GITHUB_ENV
 
           echo "$pylint_badge"
           echo "$pyright_badge"
