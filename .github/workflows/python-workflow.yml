@@ -27,7 +27,7 @@ jobs:
             pip install pylint
 
       - id: pylint
-        run: pylint **/*.py || true 
+        run: pylint **/*.py > post_traces/pylint.txt 2>&1 || true
 
   pyright:
     name: Pyright
@@ -44,7 +44,7 @@ jobs:
       - run: npm install -g pyright
 
       - id: pyright
-        run: pyright || true
+        run: pyright > post_traces/pyright.txt 2>&1 || true
 
   coverage:
     name: Code Coverage
@@ -64,7 +64,8 @@ jobs:
             pip install pytest pytest-cov
 
       - run: |
-            pytest --cov=. --cov-report xml
+            pytest --cov=. --cov-report xml || exit_code=$?
+            echo "exit_code=$exit_code" >> $GITHUB_ENV
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
@@ -97,7 +98,6 @@ jobs:
       - name: Generate badge URLs
         id: generate_badges
         run: |
-          # Debugging step to ensure the file is present
           echo "Checking coverage XML file..."
           if [ -f coverage.xml ]; then
             echo "Coverage file exists"
@@ -119,7 +119,6 @@ jobs:
           pyright_output=$(pyright --outputjson)
           error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
 
-          # Determine the badge color and label
           if [[ "$error_count" == "0" ]]; then
               pyright_score="passing"
               pyright_color="green"
@@ -128,14 +127,13 @@ jobs:
               pyright_color="red"
           fi
 
-          # Construct the badge URL
           pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
 
           echo "$pyright_badge"
 
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
-          # Gradient from red to green
+
           if (( $(echo "$coverage_percentage >= 97" | bc -l) )); then
           coverage_color="green"
           elif (( $(echo "$coverage_percentage >= 90" | bc -l) )); then
@@ -146,19 +144,30 @@ jobs:
 
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
+          if [[ "${{ env.exit_code }}" == "0" ]]; then
+            test_status="passing"
+            test_color="green"
+          else
+            test_status="failing"
+            test_color="red"
+          fi
+          test_badge="https://img.shields.io/badge/tests-${test_status}-${test_color}"
+
           echo "$pylint_badge"
           echo "$pyright_badge"
           echo "$coverage_badge"
+          echo "$test_badge"
           echo "coverage_badge=$coverage_badge" >> $GITHUB_ENV
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
+          echo "test_badge=$test_badge" >> $GITHUB_ENV
 
       - name: Update README with badges
         run: |
           sed -i '/\[Test Coverage: pytest-cov\]/c\![Test Coverage: pytest-cov](${{ env.coverage_badge }})' README.md
           sed -i '/\[Pylint\]/c\![Pylint](${{ env.pylint_badge }})' README.md
           sed -i '/\[Pyright\]/c\![Pyright](${{ env.pyright_badge }})' README.md
-
+          sed -i '/\[Tests\]/c\![Tests](${{ env.test_badge }})' README.md
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
