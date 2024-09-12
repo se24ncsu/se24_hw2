@@ -4,8 +4,8 @@
 
 ![Tests](https://img.shields.io/badge/tests-passing-green)
 ![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)
-![Pylint](https://img.shields.io/badge/pylint-10.00-green)
-![Pyright](https://img.shields.io/badge/pyright-passing-green)
+![Pylint](https://img.shields.io/badge/pylint--green)
+![Pyright](https://img.shields.io/badge/pyright-failing-red)
 
 ## Badges
 
