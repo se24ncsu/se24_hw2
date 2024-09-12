@@ -1,5 +1,6 @@
 """Mergesort"""
 
+
 def merge_sort(arr):
     """A start-up function for merge sort"""
     if len(arr) <= 1:
@@ -8,6 +9,7 @@ def merge_sort(arr):
     half = len(arr)//2
 
     return recombine(merge_sort(arr[:half]), merge_sort(arr[half:]))
+
 
 def recombine(left_arr, right_arr):
     """ A function to recombine all individual elements in a sorted manner"""
