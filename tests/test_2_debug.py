@@ -1,5 +1,5 @@
-from sort.hw2_debugging import merge_sort
-from sort.rand import random_array
+"""Test case 2"""
+from source.hw2_debugging import merge_sort
 
 def test_merge_sort_with_single_element():
     """Test merge_sort with a single-element array."""

@@ -1,5 +1,6 @@
-from sort.hw2_debugging import merge_sort
-from sort.rand import random_array
+"""Test case 1"""
+from source.hw2_debugging import merge_sort
+from source.rand import random_array
 
 def test_merge_sort_with_mixed_values():
     """Test merge_sort with a hardcoded array of mixed +ve and -ve values."""
@@ -12,4 +13,3 @@ def test_merge_sort_with_random_array():
     values = random_array([0] * 15)
     sorted_values = merge_sort(values)
     assert sorted_values == sorted(values), "Array is not sorted properly."
-

@@ -1,6 +1,5 @@
 """Mergesort"""
 
-
 def merge_sort(arr):
     """A start-up function for merge sort"""
     if len(arr) == 1:
