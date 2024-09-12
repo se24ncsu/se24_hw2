@@ -4,3 +4,4 @@
       Type parameter "_T@list" is invariant, but "None" is not the same as "int"
       Consider switching from "list" to "Sequence" which is covariant (reportArgumentType)
 1 error, 0 warnings, 0 informations 
+0 errors, 0 warnings, 0 informations 
