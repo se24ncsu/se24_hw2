@@ -210,12 +210,10 @@ jobs:
       - name: Check job status
         run: |
           for prog in pyright pylint pytest; do
-            EXIT_CODE_VAR="$exit_code_{prog}"
+            EXIT_CODE_VAR="exit_code_${prog}"
             EXIT_CODE="${!EXIT_CODE_VAR}"
-
             echo "Checking exit code for $prog: $EXIT_CODE"
-
-            if [ "$EXIT_CODE" == 0 ]; then
+            if [ "$EXIT_CODE" != 0 ]; then
               echo "$prog failed, marking job as failed."
               exit 1
             fi
