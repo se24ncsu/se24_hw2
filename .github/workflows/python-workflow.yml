@@ -100,7 +100,7 @@ jobs:
         id: generate_badges
         run: |
           # Generate pylint badge
-          pylint_output=$(pylint **/*.py 2>&1)
+          pylint_output=$(pylint **/*.py > post_traces/pylint.txt 2>&1)
           pylint_score=$(echo "$pylint_output" | grep 'rated' | awk '{print $7}' | cut -d'/' -f1)
           pylint_color="green"
           if (( $(echo "$pylint_score < 10" | bc -l) )); then
@@ -109,7 +109,7 @@ jobs:
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
 
           # Generate pyright badge
-          pyright_output=$(pyright --outputjson)
+          pyright_output=$(pyright > post_traces/pylint.txt 2>&1 --outputjson)
           error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
           if [[ "$error_count" == "0" ]]; then
               pyright_score="passing"
