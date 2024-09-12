@@ -134,7 +134,7 @@ jobs:
 
           # Generate test badge
           exit_code=$(pytest --cov=source --cov-report xml || echo $?)
-          echo "$exit_code"
+          echo "exit_code = @@@@@@@@@@@@@ $exit_code"
           if [[ "$exit_code" == "0" ]]; then
             test_status="passing"
             test_color="green"
