@@ -111,16 +111,19 @@ jobs:
           pylint_score=${pylint_score:-0}
           echo "Pylint score: $pylint_score"
           
+          exit_code_pylint=1
           if (( $(echo "$pylint_score < 5" | bc -l) )) || [ $pylint_exit_code -ne 0 ]; then
             pylint_color="red"
+            exit_code_pylint=0
           elif (( $(echo "$pylint_score < 8" | bc -l) )); then
             pylint_color="orange"
+            exit_code_pylint=0
           else
             pylint_color="green"
           fi
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
           echo "Pylint badge: $pylint_badge"
-
+          exit_code_pyright=1
           pyright_output=$(pyright --outputjson 2>&1) || true
           pyright_exit_code=$?
           echo "Pyright exit code: $pyright_exit_code"
@@ -132,6 +135,7 @@ jobs:
               pyright_score="passing"
               pyright_color="green"
             else
+              exit_code_pyright=0
               pyright_score="failing"
               pyright_color="red"
             fi
@@ -143,7 +147,7 @@ jobs:
           echo "Pyright badge: $pyright_badge"
 
           pytest_output=$(pytest --cov=source --cov-report xml 2>&1) || true
-          pytest_exit_code=$?
+          exit_code_pytest=1
           echo "Pytest exit code: $pytest_exit_code"
           echo "Pytest output: $pytest_output"
           
@@ -153,8 +157,10 @@ jobs:
             if (( $(echo "$coverage_percentage >= 97" | bc -l) )); then
               coverage_color="green"
             elif (( $(echo "$coverage_percentage >= 90" | bc -l) )); then
+              exit_code_pytest=0
               coverage_color="orange"
             else
+              exit_code_pytest=0
               coverage_color="red"
             fi
           else
@@ -203,10 +209,14 @@ jobs:
     steps:
       - name: Check job status
         run: |
-          if [ "${{ needs.pylint.result }}" != "success" ] || \
-             [ "${{ needs.pyright.result }}" != "success" ] || \
-             [ "${{ needs.coverage.result }}" != "success" ] || \
-             [ "${{ needs.generate-badges.result }}" != "success" ]; then
-            echo "One or more jobs failed. Failing the workflow."
-            exit 1
-          fi
+          for TOOL in pyright pylint pytest; do
+            EXIT_CODE_VAR="$exit_code_{TOOL}"
+            EXIT_CODE="${!EXIT_CODE_VAR}"
+
+            echo "Checking exit code for $TOOL: $EXIT_CODE"
+
+            if [ "$EXIT_CODE" == 0 ]; then
+              echo "$TOOL failed, marking job as failed."
+              exit 1
+            fi
+          done
