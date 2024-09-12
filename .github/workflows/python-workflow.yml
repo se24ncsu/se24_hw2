@@ -145,9 +145,12 @@ jobs:
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
           if [[ "${{ env.exit_code }}" == "0" ]]; then
+            echo "${{ env.exit_code }}"
             test_status="passing"
             test_color="green"
           else
+            echo "${{ env.exit_code }}"
+            echo "failing"
             test_status="failing"
             test_color="red"
           fi
