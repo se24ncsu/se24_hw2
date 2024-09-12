@@ -1,6 +1,6 @@
 # se24
 ![Test Coverage: pytest-cov](https://img.shields.io/badge/coverage-100%25-green)
-![Pylint](https://img.shields.io/badge/pylint-at-red)
+![Pylint](https://img.shields.io/badge/pylint-6.15-red)
 ![Pyright](https://img.shields.io/badge/pyright-null-green)
 <!-- ## Status Badges
 
