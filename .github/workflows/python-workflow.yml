@@ -29,7 +29,7 @@ jobs:
           pip install pylint
 
       - id: pylint
-        run: pylint **/*.py > post_traces/pylint.txt 2>&1 || true
+        run: pylint **/*.py || true
 
   pyright:
     name: Pyright
@@ -46,7 +46,7 @@ jobs:
       - run: npm install -g pyright
 
       - id: pyright
-        run: pyright --outputjson > post_traces/pyright.txt 2>&1 || true
+        run: pyright --outputjson || true
 
   coverage:
     name: Code Coverage

@@ -33,3 +33,4 @@ def recombine(left_arr, right_arr):
         left_index += 1
 
     return merge_arr
+    return 1
