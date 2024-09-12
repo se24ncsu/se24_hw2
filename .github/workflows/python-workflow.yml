@@ -29,7 +29,8 @@ jobs:
           pip install pylint
 
       - id: pylint
-        run: pylint **/*.py || true
+        run: pylint **/*.py
+        continue-on-error: true
 
   pyright:
     name: Pyright
@@ -46,7 +47,8 @@ jobs:
       - run: npm install -g pyright
 
       - id: pyright
-        run: pyright --outputjson || true
+        run: pyright --outputjson
+        continue-on-error: true
 
   coverage:
     name: Code Coverage
@@ -66,7 +68,8 @@ jobs:
           pip install pytest pytest-cov
 
       - run: |
-          pytest --cov=source --cov-report xml || true
+          pytest --cov=source --cov-report xml
+        continue-on-error: true
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
@@ -99,7 +102,6 @@ jobs:
       - name: Generate badge URLs
         id: generate_badges
         run: |
-          # Pylint
           pylint_output=$(pylint **/*.py 2>&1) || true
           pylint_exit_code=$?
           echo "Pylint exit code: $pylint_exit_code"
@@ -119,7 +121,6 @@ jobs:
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
           echo "Pylint badge: $pylint_badge"
 
-          # Pyright
           pyright_output=$(pyright --outputjson 2>&1) || true
           pyright_exit_code=$?
           echo "Pyright exit code: $pyright_exit_code"
@@ -141,7 +142,6 @@ jobs:
           pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
           echo "Pyright badge: $pyright_badge"
 
-          # Coverage and Pytest
           pytest_output=$(pytest --cov=source --cov-report xml 2>&1) || true
           pytest_exit_code=$?
           echo "Pytest exit code: $pytest_exit_code"
@@ -194,3 +194,19 @@ jobs:
           author_name: git
           author_email: git@example.com
           message: Update badges in README
+
+  check-status:
+    name: Check Status
+    needs: [pylint, pyright, coverage, generate-badges]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check job status
+        run: |
+          if [ "${{ needs.pylint.result }}" != "success" ] || \
+             [ "${{ needs.pyright.result }}" != "success" ] || \
+             [ "${{ needs.coverage.result }}" != "success" ] || \
+             [ "${{ needs.generate-badges.result }}" != "success" ]; then
+            echo "One or more jobs failed. Failing the workflow."
+            exit 1
+          fi
