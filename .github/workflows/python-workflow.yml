@@ -99,20 +99,33 @@ jobs:
             exit 1
           fi
           
-          # Extract coverage percentage
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
           
-          # Generate badges
           pylint_score=$(pylint **/*.py | grep 'rated' | awk '{print $6}' | cut -d'/' -f1)  # Example, modify as needed
-          pyright_score="0"  # Placeholder, modify as needed
-          pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-green"
-          pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-green"
-          coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%-green"
+          pylint_color="green"
+          if (( $(echo "$pylint_score < 10" | bc -l) )); then
+            pylint_color="red"
+          fi
+          pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
+
+          pyright_output=$(pyright --outputjson)
+          pyright_score=$(echo "$pyright_output" | jq -r '.score')  # Adjust extraction based on actual output
+          pyright_color="green"
+          if [[ "$pyright_score" == "0" || "$pyright_score" == "" ]]; then
+            pyright_color="red"
+          fi
+          pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
+
+          coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
+          coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
+          # Gradient from red to green
+          coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-%23FF0000-%2300FF00"
 
           echo "coverage_badge=$coverage_badge" >> $GITHUB_ENV
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
+
 
       - name: Update README with badges
         run: |
