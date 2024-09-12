@@ -93,12 +93,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libxml2-utils
           python -m pip install --upgrade pip
-          pip install pylint
+          pip install pylint pytest pytest-cov
           npm install -g pyright
 
       - name: Generate badge URLs
         id: generate_badges
         run: |
+          # Generate pylint badge
           pylint_output=$(pylint **/*.py 2>&1)
           pylint_score=$(echo "$pylint_output" | grep 'rated' | awk '{print $7}' | cut -d'/' -f1)
           pylint_color="green"
@@ -107,6 +108,7 @@ jobs:
           fi
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
 
+          # Generate pyright badge
           pyright_output=$(pyright --outputjson)
           error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
           if [[ "$error_count" == "0" ]]; then
@@ -118,6 +120,7 @@ jobs:
           fi
           pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
 
+          # Generate coverage badge
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
           coverage_percentage=$(echo "scale=0; $coverage * 100" | bc)
           if (( $(echo "$coverage_percentage >= 97" | bc -l) )); then
@@ -129,6 +132,7 @@ jobs:
           fi
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
+          # Generate test badge
           exit_code=$(pytest --cov=source --cov-report xml || echo $?)
           if [[ "$exit_code" == "0" ]]; then
             test_status="passing"
