@@ -133,8 +133,8 @@ jobs:
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
 
           # Generate test badge
-          exit_code=$(pytest --cov=source --cov-report xml || echo $?)
-          echo "exit_code = @@@@@@@@@@@@@ $exit_code"
+          pytest --cov=source --cov-report xml
+          exit_code=$?
           if [[ "$exit_code" == "0" ]]; then
             test_status="passing"
             test_color="green"
@@ -143,7 +143,7 @@ jobs:
             test_color="red"
           fi
           test_badge="https://img.shields.io/badge/tests-${test_status}-${test_color}"
-          echo "$test_badge"
+          echo "Test badge: $test_badge"
 
           echo "pylint_badge=$pylint_badge" >> $GITHUB_ENV
           echo "pyright_badge=$pyright_badge" >> $GITHUB_ENV
