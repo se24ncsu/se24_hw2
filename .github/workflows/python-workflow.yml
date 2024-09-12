@@ -101,14 +101,18 @@ jobs:
         run: |
           pylint_output=$(pylint **/*.py)
           pylint_score=$(echo "$pylint_output" | grep 'rated' | awk '{print $7}' | cut -d'/' -f1)
+          echo "pylint_score = $pylint_score"
           pylint_color="green"
           if (( $(echo "$pylint_score < 10" | bc -l) )); then
             pylint_color="red"
           fi
           pylint_badge="https://img.shields.io/badge/pylint-${pylint_score}-${pylint_color}"
+          echo "pylint_badge = $pylint_badge"
 
           pyright_output=$(pyright --outputjson)
+          echo "pyright_output = $pyright_output"
           error_count=$(echo "$pyright_output" | jq -r '.summary.errorCount')
+          echo "error_count = $error_count"
           if [[ "$error_count" == "0" ]]; then
               pyright_score="passing"
               pyright_color="green"
@@ -117,6 +121,7 @@ jobs:
               pyright_color="red"
           fi
           pyright_badge="https://img.shields.io/badge/pyright-${pyright_score}-${pyright_color}"
+          echo "pyright_badge = $pyright_badge"
 
           # Generate coverage badge
           coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
@@ -129,6 +134,7 @@ jobs:
             coverage_color="red"
           fi
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
+          echo "coverage_badge = $coverage_badge"
 
           pytest --cov=source --cov-report xml
           exit_code=$?
@@ -150,10 +156,10 @@ jobs:
       - name: Update README with badges
         run: |
           run_url = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          sed -i '/\[Test Coverage: pytest-cov\]/c\![Test Coverage: pytest-cov]((${{ env.coverage_badge }})("$RUN_LOG_URL")' README.md
-          sed -i '/\[Pylint\]/c\![Pylint](${{ env.pylint_badge }})("$RUN_LOG_URL")' README.md
-          sed -i '/\[Pyright\]/c\![Pyright](${{ env.pyright_badge }})("$RUN_LOG_URL")' README.md
-          sed -i '/\[Tests\]/c\![Tests](${{ env.test_badge }})("$RUN_LOG_URL")' README.md
+          sed -i '/\[Test Coverage: pytest-cov\]/c\![Test Coverage: pytest-cov]((${{ env.coverage_badge }})('"$RUN_LOG_URL"')' README.md
+          sed -i '/\[Pylint\]/c\![Pylint](${{ env.pylint_badge }})('"$RUN_LOG_URL"')' README.md
+          sed -i '/\[Pyright\]/c\![Pyright](${{ env.pyright_badge }})('"$RUN_LOG_URL"')' README.md
+          sed -i '/\[Tests\]/c\![Tests](${{ env.test_badge }})('"$RUN_LOG_URL"')' README.md
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
