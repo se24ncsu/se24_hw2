@@ -164,12 +164,12 @@ jobs:
           coverage_badge="https://img.shields.io/badge/coverage-${coverage_percentage}%25-${coverage_color}"
           echo "Coverage badge: $coverage_badge"
 
-          if [ $pytest_exit_code -eq 0 ]; then
-            test_status="passing"
-            test_color="green"
-          else
+          if echo "$pytest_output" | grep -q "FAILURES"; then
             test_status="failing"
             test_color="red"
+          else
+            test_status="passing"
+            test_color="green"
           fi
           test_badge="https://img.shields.io/badge/tests-${test_status}-${test_color}"
           echo "Test badge: $test_badge"
